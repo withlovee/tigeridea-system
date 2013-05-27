@@ -9,11 +9,18 @@ class Person(models.Model):
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
 
-#class PersonAdmin(admin.ModelAdmin): 
-#    list_display = ('first_name', 'last_name')
+class PersonAdmin(admin.ModelAdmin): 
+    #change_list_template = 'smuggler/change_list.html'
+    fieldsets = [
+    ('Name', {'fields': ('first_name', 'last_name')}),
+    ]
+    list_display = ('first_name', 'last_name')
+    search_fields = ['first_name', 'last_name']
+    #list_filter = ('first_name', 'last_name')
 
-#admin.site.register(Person, PersonAdmin)
-admin.site.register(Person)
+
+admin.site.register(Person, PersonAdmin)
+#admin.site.register(Person)
 
 class BannedPerson(models.Model):
     name = models.OneToOneField(Person, related_name='is banned')
@@ -23,6 +30,8 @@ class BannedPerson(models.Model):
 
 class BannedPersonAdmin(admin.ModelAdmin): 
     list_display = ('name', 'timestamp')
+    list_filter = ['timestamp']
+    search_fields = ['name__first_name', 'name__last_name']
 
 admin.site.register(BannedPerson, BannedPersonAdmin)
 
@@ -34,5 +43,7 @@ class Log(models.Model):
 
 class LogAdmin(admin.ModelAdmin): 
     list_display = ('name', 'timestamp')
+    list_filter = ['timestamp']
+    search_fields = ['name__first_name', 'name__last_name']
 
 admin.site.register(Log, LogAdmin)
