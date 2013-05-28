@@ -4,7 +4,14 @@
     <div class="panel right">
         <h1>View {{ person.first_name }} {{ person.last_name }}</h1>
         <p>
-            {{ person.no }} {{ person.first_name }} {{ person.last_name }}
+            <a href="{% url 'edit_person' person.no %}">[edit]</a> 
+            <a href="{{ person.get_absolute_url }}">[view]</a> 
+            <a href="{% url 'delete_person' person.no %}">[delete]</a><br>
+            {{ person.no }}<br>
+            {{ person.first_name }}<br>
+            {{ person.last_name }}<br>
+            {{ person.organization }}
         </p>
+        <p>{% if banned %}Banned{% endif %}</p>
     </div>
 {% endblock %}

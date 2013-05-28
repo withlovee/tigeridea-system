@@ -2,7 +2,7 @@
  
 {% block content %}
     <div class="panel right">
-        <h1>List</h1>
+        <h1>ทะเบียนมัคคุเทศก์</h1>
         <form action="/list/" method="get">
             <table>
                 <tr><th>No</th><td><input type="text" name="no1" placeholder="No" value="{{ queries_list.no1 }}">-<input type="text" name="no2" placeholder="No" value="{{ queries_list.no2 }}"></td></tr>
@@ -14,7 +14,7 @@
         <p>
             {% for person in people %}
             <a href="{% url 'edit_person' person.no %}">[e]</a> 
-            <a href="{{ person.get_absolute_url }}">[v]</a> 
+            <a href="{% url 'view_person' person.no %}">[v]</a> 
             <a href="{% url 'delete_person' person.no %}">[d]</a> 
             {{ person.no }} {{ person.first_name }} {{ person.last_name }}<br>
             {% endfor %}

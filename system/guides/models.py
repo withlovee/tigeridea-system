@@ -3,12 +3,13 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse, reverse_lazy
 
 class Person(models.Model):
-    no = models.PositiveIntegerField(primary_key=True)
+    no = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    organization = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return u'%s %s' % (self.first_name, self.last_name)
+        return u'%s %s %s' % (self.no, self.first_name, self.last_name)
         
     @models.permalink
     def get_absolute_url(self):
@@ -27,7 +28,7 @@ admin.site.register(Person, PersonAdmin)
 
 class BannedPerson(models.Model):
     name = models.OneToOneField(Person, related_name='is banned')
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     def __unicode__(self):
         return self.name.first_name+' '+self.name.last_name
 
@@ -40,7 +41,7 @@ admin.site.register(BannedPerson, BannedPersonAdmin)
 
 class Log(models.Model):
     name = models.ForeignKey(Person, related_name='logs')
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     def __unicode__(self):
         return self.name.first_name+' '+self.name.last_name
 

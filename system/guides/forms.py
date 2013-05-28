@@ -11,6 +11,7 @@ class AddPersonForm(forms.ModelForm):
 		super(AddPersonForm, self).__init__(*args, **kwargs)
 		self.fields['first_name'].widget.attrs['placeholder'] = "First Name"
 		self.fields['last_name'].widget.attrs['placeholder'] = "Last Name"
-		self.fields['no'].widget.attrs['placeholder'] = "no"
+		#self.fields['no'].widget.attrs['placeholder'] = "no"
 		self.fields['first_name'].label = 'ชื่อจริง'
 		self.fields['last_name'].label = 'นามสกุล'
+		self.fields['organization'].label = 'องค์กร'
