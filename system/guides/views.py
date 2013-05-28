@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.views.generic import CreateView, UpdateView, DeleteView
+from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
 from guides.forms import AddPersonForm
 from guides.models import Person
 from django.db.models import Max
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse, reverse_lazy
 
 def list_person(request):
 	people = Person.objects.all()
@@ -60,17 +62,22 @@ def add_person(request):
 			person.user = request.user
 			person.save()
 			# Success
-			#return redirect('/')
-		else:
-			pass
-			# Failure
-			#return redirect('/')
+			return redirect('/view/'+str(person.no))
 	return render(request, 'add_person.html', {'form': form, 'max_number': max_no['no__max']})
 
-def view_person(request):
-	person_no = request.GET.get('no')
-	if person_no :
-		person = Person.objects.get(no=person_no)
-		return render(request, 'view_person.html', {'person': person})
-	else :
-		return render(request, 'error.html')
+def view_person(request, no):
+	person_no = no
+	person = Person.objects.get(no=person_no)
+	return render(request, 'view_person.html', {'person': person})
+
+class EditPerson(UpdateView):
+    form_class = AddPersonForm
+    model = Person
+    template_name = 'edit_person.html'
+    #def get_absolute_url(self):
+#    	return '/list/'
+
+class DeletePerson(DeleteView):
+    model = Person
+    template_name = 'delete_person.html'
+    success_url = '/list/'

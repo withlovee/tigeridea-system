@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+ 
+{% block content %}
+    <div class="panel right">
+        <h1>Deleted {{ person.first_name }} {{ person.last_name }}</h1>
+        <p>
+            {{ person.no }} {{ person.first_name }} {{ person.last_name }}
+            <br>
+            Are you sure?
+            <form method="post">
+            {% csrf_token %}
+            <table>
+            {{ form.as_table }}
+        	</table>
+            <input type="submit" value="Add">
+            </form>
+        </p>
+    </div>
+{% endblock %}

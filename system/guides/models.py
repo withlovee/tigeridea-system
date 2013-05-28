@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib import admin
+from django.core.urlresolvers import reverse, reverse_lazy
 
 class Person(models.Model):
     no = models.PositiveIntegerField(primary_key=True)
@@ -8,6 +9,10 @@ class Person(models.Model):
 
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
+        
+    @models.permalink
+    def get_absolute_url(self):
+        return ('view_person', (), {'no': self.no})
 
 class PersonAdmin(admin.ModelAdmin): 
     #change_list_template = 'smuggler/change_list.html'
