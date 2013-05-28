@@ -4,7 +4,7 @@
     <div class="panel right">
         <h1>Add Banned</h1>
         <p>
-            <form action="/add-banned/" method="post">
+            <form action="/blacklist/add/" method="post">
             {% csrf_token %}
             <table>
             {{ form.as_table }}

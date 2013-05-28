@@ -14,9 +14,8 @@
         <p>
             {% for person in people %}
             <a href="{% url 'edit_person' person.no %}">[e]</a> 
-            <a href="{% url 'view_person' person.no %}">[v]</a> 
             <a href="{% url 'delete_person' person.no %}">[d]</a> 
-            {{ person.no }} {{ person.first_name }} {{ person.last_name }}<br>
+            {{ person.no }} <a href="{% url 'view_person' person.no %}">{{ person.first_name }} {{ person.last_name }}</a> <br>
             {% endfor %}
         </p>
     </div>

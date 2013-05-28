@@ -13,11 +13,10 @@
         </form>
         <p>
             {% for person in people %}
-            <a href="{% url 'edit_person' person.name.no %}">[e]</a> 
-            <a href="{{ person.name.get_absolute_url }}">[v]</a> 
+            <a href="{% url 'edit_person' person.name.no %}">[e]</a>  
             <a href="{% url 'delete_person' person.name.no %}">[d]</a> 
             <a href="{% url 'unban_person' person.name.no %}">[remove from banned list]</a> 
-            {{ person.name.no }} {{ person.name.first_name }} {{ person.name.last_name }}<br>
+            {{ person.name.no }} <a href="{{ person.name.get_absolute_url }}">{{ person.name.first_name }} {{ person.name.last_name }}</a><br>
             {% endfor %}
         </p>
     </div>

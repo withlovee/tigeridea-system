@@ -7,6 +7,9 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from guides.forms import AddPersonForm
 from guides.models import Person, BannedPerson
+from xlwt import *
+from datetime import datetime
+import os.path
 
 def list_person(request):
 	people = Person.objects.all()
@@ -129,23 +132,41 @@ def view_person(request, no):
 		banned = False
 	return render(request, 'view_person.html', {'person': person, 'banned': banned})
 
+def export_banned(request):
+
+	w = Workbook()
+	ws = w.add_sheet('Banned List')
+	people = BannedPerson.objects.all().order_by('name__no')
+	text = XFStyle()
+	time = XFStyle()
+	time.num_format_str = 'M/D/YY h:mm'
+	i = 0
+	for person in people:
+		ws.write(i, 0, person.name.no, text)
+		ws.write(i, 1, person.name.first_name+" "+person.name.last_name, text)
+		#ws.write(i, 2, person.timestamp, time)
+		i += 1
+	file_path = r""+os.path.dirname(__file__)+r"\static\export\banned_list.xls"
+	w.save(file_path)
+	return render(request, 'export_banned.html')
+
 class EditPerson(UpdateView):
-    form_class = AddPersonForm
-    model = Person
-    template_name = 'edit_person.html'
+	form_class = AddPersonForm
+	model = Person
+	template_name = 'edit_person.html'
 
 class DeletePerson(DeleteView):
-    model = Person
-    template_name = 'delete_person.html'
-    success_url = '/list/'
+	model = Person
+	template_name = 'delete_person.html'
+	success_url = '/list/'
 
 class AddBannedPerson(CreateView):
-    model = BannedPerson
-    template_name = 'add_banned.html'
-    success_url = '/list/'
+	model = BannedPerson
+	template_name = 'add_banned.html'
+	success_url = '/blacklist/'
 
 class UnbanPerson(DeleteView):
-    model = BannedPerson
-    slug_field = 'name__no'
-    template_name = 'unban_person.html'
-    success_url = '/banned/'
+	model = BannedPerson
+	slug_field = 'name__no'
+	template_name = 'unban_person.html'
+	success_url = '/blacklist/'
