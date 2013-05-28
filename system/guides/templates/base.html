@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet/less" href="{{ STATIC_URL }}style.less">
+    <script src="{{ STATIC_URL }}less.js"></script>
+</head>
+<body>
+    <header>
+        <div class="wrapper">
+            <img src="{{ STATIC_URL }}gfx/logo.png">
+            <span>Twitter Clone</span>
+            {% block login %}
+            <a href="/">Home</a>
+            <a href="/add/">Add New Tourguide</a>
+            <a href="/list/">List</a>
+            <a href="/ribbits">Public Ribbits</a>
+            {% endblock %}
+        </div>
+    </header>
+    <div id="content">
+        <div class="wrapper">
+            {% block flash %}
+            {% if notice %}
+            <div class="flash notice">
+                {{ notice }}
+            </div>
+            {% endif %}
+            {% endblock %}
+
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    </div>
+    <footer>
+        <div class="wrapper">
+            Footer
+        </div>
+    </footer>
+</body>
+</html>

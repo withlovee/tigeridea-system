@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib import admin
 
-# Create your models here.
 class Person(models.Model):
+    no = models.PositiveIntegerField(primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
@@ -11,9 +11,7 @@ class Person(models.Model):
 
 class PersonAdmin(admin.ModelAdmin): 
     #change_list_template = 'smuggler/change_list.html'
-    fieldsets = [
-    ('Name', {'fields': ('first_name', 'last_name')}),
-    ]
+    fieldsets = [('Name', {'fields': ('first_name', 'last_name')}),]
     list_display = ('first_name', 'last_name')
     search_fields = ['first_name', 'last_name']
     #list_filter = ('first_name', 'last_name')
