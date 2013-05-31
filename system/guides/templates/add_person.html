@@ -4,7 +4,7 @@
     <div class="panel right">
         <h1>เพิ่มมัคคุเทศก์</h1>
         <p>
-            <form action="/add/" method="post">
+            <form action="/add/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <table>
             {{ form.as_table }}

@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from guides.forms import AddPersonForm
 from guides.models import Person, BannedPerson
 from xlwt import *
+import zipfile
 from datetime import datetime
 import os.path
 
@@ -113,7 +114,7 @@ def add_person(request):
 	max_no = 0
 	form = AddPersonForm()
 	if request.method == 'POST':
-		form = AddPersonForm(request.POST)
+		form = AddPersonForm(request.POST, request.FILES)
 		if form.is_valid():
 			person = form.save()
 			person.user = request.user
@@ -133,7 +134,6 @@ def view_person(request, no):
 	return render(request, 'view_person.html', {'person': person, 'banned': banned})
 
 def export_banned(request):
-
 	w = Workbook()
 	ws = w.add_sheet('Banned List')
 	people = BannedPerson.objects.all().order_by('name__no')
@@ -146,9 +146,54 @@ def export_banned(request):
 		ws.write(i, 1, person.name.first_name+" "+person.name.last_name, text)
 		#ws.write(i, 2, person.timestamp, time)
 		i += 1
-	file_path = r""+os.path.dirname(__file__)+r"\static\export\banned_list.xls"
+	file_path = r""+os.path.dirname(__file__)+r"\uploads\export\banned_list.xls"
 	w.save(file_path)
 	return render(request, 'export_banned.html')
+
+def export_person(request):
+	people = Person.objects.all().order_by('no')
+	files = []
+
+	# Get Search Query
+	no1 = request.GET.get('no1')
+	no2 = request.GET.get('no2')
+	# Filter Search
+	if no1 :
+		people = people.filter(no__gte=no1)
+	if no2 :
+		people = people.filter(no__lte=no2)
+
+	w = Workbook()
+	ws = w.add_sheet('People')
+	text = XFStyle()
+	time = XFStyle()
+	time.num_format_str = 'M/D/YY h:mm'
+
+	if no1 or no2:
+		# Create data XLS
+		i = 0
+		for person in people:
+			ws.write(i, 0, person.no, text)
+			ws.write(i, 1, person.first_name+" "+person.last_name, text)
+			ws.write(i, 2, person.organization, text)
+			#ws.write(i, 2, person.timestamp, time)
+			i += 1
+		file_path = r""+os.path.dirname(__file__)+r"\uploads\export\export_list.xls"
+		w.save(file_path)
+
+		# Create Images Zip
+		file_path = r""+os.path.dirname(__file__)+r"\uploads\export\export_images.zip"
+		zf = zipfile.ZipFile(file_path, mode='w')
+		try:
+			for person in people:
+				files.append(person.image.name);
+				print 'adding '+person.image.path
+				zf.write(person.image.path,person.image.name)
+		finally:
+			print 'closing'
+			zf.close()
+
+	return render(request, 'export_people.html', {'queries': request.GET.copy(), 'files': files})
 
 class EditPerson(UpdateView):
 	form_class = AddPersonForm

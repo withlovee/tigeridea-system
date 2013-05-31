@@ -4,12 +4,12 @@
     <div class="panel right">
         <h1>แก้ไขข้อมูลมัคคุเทศก์</h1>
         <p>
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <table>
             {{ form.as_table }}
         	</table>
-            <input type="submit" value="Add">
+            <input type="submit" value="แก้ไข">
             </form>
         </p>
     </div>
