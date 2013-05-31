@@ -1,41 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet/less" href="{{ STATIC_URL }}style.less">
-    <script src="{{ STATIC_URL }}less.js"></script>
+	<link rel="stylesheet/less" href="{{ STATIC_URL }}css/style.less">
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
+	<script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+	<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}less.js"></script>
 </head>
 <body>
-    <header>
-        <div class="wrapper">
-            <span>System</span>
-            <a href="/">Home</a>
-            <a href="/add/">เพิ่มมัคคุเทศก์</a>
-            <a href="/list/">ทะเบียนมัคคุเทศก์</a>
-            <a href="/export">Export</a>
-            <a href="/blacklist">Blacklist</a>
-            <a href="/blacklist/add">Add Banned Person</a>
-            <a href="/blacklist/export">Export Banned List</a>
-        </div>
-    </header>
-    <div id="content">
-        <div class="wrapper">
-            {% block flash %}
-            {% if notice %}
-            <div class="flash notice">
-                {{ notice }}
-            </div>
-            {% endif %}
-            {% endblock %}
+<div class="navbar">
+	<div class="navbar-inner">
+		<a class="brand" href="#">Title</a>
+		<ul class="nav">
+			<li><a href="/">หน้าแรก</a></li>
+			<li><a href="/add/">เพิ่มมัคคุเทศก์</a></li>
+			<li><a href="/list/">ทะเบียนมัคคุเทศก์</a></li>
+			<li><a href="/export">Export</a></li>
+			<li><a href="/log">Import Log</a></li>
+			<li class="dropdown">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Blacklist <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="/blacklist">รายชื่อ</a></li>
+					<li><a href="/blacklist/add">เพิ่มเข้า Blacklist</a></li>
+					<li><a href="/blacklist/export">Export Blacklist</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+	<div id="content">
+		<div class="container">
+			{% block flash %}
+			{% if notice %}
+			<div class="flash notice">
+				{{ notice }}
+			</div>
+			{% endif %}
+			{% endblock %}
 
-            {% block content %}
+			{% block content %}
 
-            {% endblock %}
-        </div>
-    </div>
-    <footer>
-        <div class="wrapper">
-            Footer
-        </div>
-    </footer>
+			{% endblock %}
+		</div>
+	</div>
+	<footer>
+		<div class="container">
+			Footer
+		</div>
+	</footer>
 </body>
 </html>

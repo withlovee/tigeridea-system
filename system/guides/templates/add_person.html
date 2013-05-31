@@ -1,16 +1,16 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel right">
-        <h1>เพิ่มมัคคุเทศก์</h1>
-        <p>
-            <form action="/add/" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <table>
-            {{ form.as_table }}
-        	</table>
-            <input type="submit" value="เพิ่ม">
-            </form>
-        </p>
-    </div>
+	<div class="panel right">
+		<h1>เพิ่มมัคคุเทศก์</h1>
+		<p>
+			<form action="/add/" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<table>
+			{{ form.as_table }}
+			</table>
+			<tr><th></th><td><input class="btn btn-primary" type="submit" value="เพิ่ม"></td></tr>
+			</form>
+		</p>
+	</div>
 {% endblock %}

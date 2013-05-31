@@ -1,12 +1,11 @@
 #!-*- coding: utf-8 -*-
 from django import forms
 from django.utils.html import strip_tags
-from guides.models import Person
+from guides.models import Person, Log
 
 class AddPersonForm(forms.ModelForm):
 	class Meta:
 		model = Person
-
 	def __init__(self, *args, **kwargs):
 		super(AddPersonForm, self).__init__(*args, **kwargs)
 		self.fields['first_name'].widget.attrs['placeholder'] = "First Name"
@@ -15,3 +14,10 @@ class AddPersonForm(forms.ModelForm):
 		self.fields['first_name'].label = 'ชื่อจริง'
 		self.fields['last_name'].label = 'นามสกุล'
 		self.fields['organization'].label = 'องค์กร'
+		self.fields['image'].label = 'รูป'
+
+class LogForm(forms.ModelForm):
+	class Meta:
+		model = Log
+	def __init__(self, *args, **kwargs):
+		super(LogForm, self).__init__(*args, **kwargs)

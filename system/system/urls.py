@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 	url(r'^view/(?P<no>\d+)/$', 'guides.views.view_person', name='view_person'), # view a person
 	url(r'^list/$', 'guides.views.list_person'), # list people
 	url(r'^export/$', 'guides.views.export_person'), # export people
+	url(r'^log/$', 'guides.views.import_log'), # import log
 	url(r'^blacklist/$', 'guides.views.list_banned'), # list banned people
 	url(r'^blacklist/export/$', 'guides.views.export_banned'), # list people
 	url(r'^blacklist/add/$', AddBannedPerson.as_view(), name='add_banned_person'), # add a person

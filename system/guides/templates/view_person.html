@@ -1,18 +1,37 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel right">
-        <h1>View {{ person.first_name }} {{ person.last_name }}</h1>
-        <p>
-            <a href="{% url 'edit_person' person.no %}">[edit]</a> 
-            <a href="{{ person.get_absolute_url }}">[view]</a> 
-            <a href="{% url 'delete_person' person.no %}">[delete]</a><br>
-            <img src="{{person.image.url}}" ><br>
-            {{ person.no }}<br>
-            {{ person.first_name }}<br>
-            {{ person.last_name }}<br>
-            {{ person.organization }}
-        </p>
-        <p>{% if banned %}Banned{% endif %}</p>
-    </div>
+	<div class="panel right">
+		<h1>{{ person.first_name }} {{ person.last_name }}</h1>
+		<div class="row-fluid">
+			<div class="span3">
+				<img src="{{person.image.url}}" >
+			</div>
+			<div class="span9">
+				<table class="table">
+					<tr><th width="20%">เลขประจำตัว</th><td>{{ person.no }}</td></tr>
+					<tr><th>ชื่อ</th><td>{{ person.first_name }} {{ person.last_name }}</td></tr>
+					<tr><th>องค์กร</th><td>{{ person.organization }}</td></tr>
+				</table>
+				<a class="btn btn-info" href="{% url 'edit_person' person.no %}"><i class="icon-edit icon-white"></i> แก้ไขข้อมูล</a>
+				<a class="btn btn-danger" href="{% url 'delete_person' person.no %}"><i class="icon-trash icon-white"></i> ลบออกจากระบบ</a>
+			</div>
+		</div>
+		<Br><br>
+		<h2>ประวัติการเข้า</h2>
+		<table class="table table-striped table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th width="5%">ครั้งที่</th>
+					<th width="90%">วันที่</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for i, row in enu_log %}
+				<tr><td>{{ i|add:"1" }}</td><td>{{ row.timestamp }}</td></tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		<p>{% if banned %}Banned{% endif %}</p>
+	</div>
 {% endblock %}

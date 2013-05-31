@@ -5,10 +5,15 @@ from django.db.models import Max
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-from guides.forms import AddPersonForm
-from guides.models import Person, BannedPerson
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+from guides.forms import AddPersonForm, LogForm
+from guides.models import Person, BannedPerson, Log
 from xlwt import *
+import xlrd
 import zipfile
+from time import time
 from datetime import datetime
 import os.path
 
@@ -56,6 +61,7 @@ def list_person(request):
 		'queries_list': request.GET.dict(),
 		}
 	)
+
 def list_banned(request):
 	people = BannedPerson.objects.all()
 	page = request.GET.get('p')
@@ -126,12 +132,18 @@ def add_person(request):
 def view_person(request, no):
 	person_no = no
 	person = Person.objects.get(no=person_no)
+	log = Log.objects.filter(name__no=person_no)
 	try: 
 		BannedPerson.objects.get(name__no=person_no)
 		banned = True
 	except ObjectDoesNotExist:
 		banned = False
-	return render(request, 'view_person.html', {'person': person, 'banned': banned})
+	return render(request, 'view_person.html', {
+		'person': person, 
+		'banned': banned, 
+		'log': log, 
+		'enu_log': enumerate(log),
+		})
 
 def export_banned(request):
 	w = Workbook()
@@ -194,6 +206,27 @@ def export_person(request):
 			zf.close()
 
 	return render(request, 'export_people.html', {'queries': request.GET.copy(), 'files': files})
+
+def import_log(request):
+	data = []
+	if request.method == 'POST':
+		log_file = request.FILES['file']
+		path = default_storage.save('uploads/log.xls', ContentFile(log_file.read()))
+		tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+		book = xlrd.open_workbook(tmp_file)
+		sh = book.sheet_by_index(0)
+		for i in range(sh.nrows):
+			no = int(sh.cell_value(rowx=i, colx=0))
+			time2 = int(sh.cell_value(rowx=i, colx=1))
+			form = LogForm({'name': no, 'timestamp': datetime.fromtimestamp(time2)})
+			if form.is_valid():
+				log_result = form.save()
+				data.append({
+					'no': log_result.name.no,
+					'name': log_result.name.first_name+' '+log_result.name.last_name, 
+					'timestamp': datetime.fromtimestamp(time2)
+					})
+	return render(request, 'import_log.html', {'data': data})
 
 class EditPerson(UpdateView):
 	form_class = AddPersonForm

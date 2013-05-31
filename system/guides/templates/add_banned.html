@@ -1,16 +1,16 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel right">
-        <h1>เพิ่มเข้า Blacklist</h1>
-        <p>
-            <form action="/blacklist/add/" method="post">
-            {% csrf_token %}
-            <table>
-            {{ form.as_table }}
-        	</table>
-            <input type="submit" value="เพิ่ม">
-            </form>
-        </p>
-    </div>
+	<div class="panel right">
+		<h1>เพิ่มเข้า Blacklist</h1>
+		<p>
+			<form action="/blacklist/add/" method="post">
+			{% csrf_token %}
+			<table>
+			{{ form.as_table }}
+			</table>
+			<tr><th></th><td><input class="btn btn-primary" type="submit" value="เพิ่ม"></td></tr>
+			</form>
+		</p>
+	</div>
 {% endblock %}

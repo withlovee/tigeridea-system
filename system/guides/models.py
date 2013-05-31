@@ -65,7 +65,7 @@ admin.site.register(BannedPerson, BannedPersonAdmin)
 
 class Log(models.Model):
     name = models.ForeignKey(Person, related_name='logs')
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField()
     def __unicode__(self):
         return self.name.first_name+' '+self.name.last_name
 

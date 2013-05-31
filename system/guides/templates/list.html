@@ -1,37 +1,50 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel right">
-        <h1>ทะเบียนมัคคุเทศก์</h1>
-        <form action="/list/" method="get">
-            <table>
-                <tr><th>No</th><td><input type="text" name="no1" placeholder="No" value="{{ queries_list.no1 }}">-<input type="text" name="no2" placeholder="No" value="{{ queries_list.no2 }}"></td></tr>
-                <tr><th>ชื่อจริง</th><td><input type="text" name="first_name" placeholder="" value="{{ queries_list.first_name }}"></td></tr>
-                <tr><th>นามสกุล</th><td><input type="text" name="last_name" placeholder="" value="{{ queries_list.last_name }}"></td></tr>
-                <tr><th></th><td><input type="submit" value="ค้นหา"></td></tr>
-            </table>
-        </form>
-        <p>
-            {% for person in people %}
-            <a href="{% url 'edit_person' person.no %}">[e]</a> 
-            <a href="{% url 'delete_person' person.no %}">[d]</a> 
-            {{ person.no }} <a href="{% url 'view_person' person.no %}">{{ person.first_name }} {{ person.last_name }}</a> <br>
-            {% endfor %}
-        </p>
-    </div>
+	<div class="panel right">
+		<h1>ทะเบียนมัคคุเทศก์</h1>
+		<form action="/list/" method="get">
+			<table>
+				<tr><th>เลขประจำตัว</th><td><input type="text" name="no1" placeholder="ตั้งแต่" value="{{ queries_list.no1 }}">-<input type="text" name="no2" placeholder="ถึง" value="{{ queries_list.no2 }}"></td></tr>
+				<tr><th>ชื่อจริง</th><td><input type="text" name="first_name" placeholder="" value="{{ queries_list.first_name }}"></td></tr>
+				<tr><th>นามสกุล</th><td><input type="text" name="last_name" placeholder="" value="{{ queries_list.last_name }}"></td></tr>
+				<tr><th></th><td><input class="btn btn-primary" type="submit" value="ค้นหา"></td></tr>
+			</table>
+		</form>
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">เลขประจำตัว</th>
+					<th width="50%">ชื่อ</th>
+					<th width="30%">องค์กร</th>
+					<th width="10%"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for person in people %}
+				<tr>
+					<td>{{ person.no }}</td>
+					<td><a href="{% url 'view_person' person.no %}"><strong>{{ person.first_name }} {{ person.last_name }}</strong></a></td>
+					<td>{{ person.organization }}</td>
+					<td><a href="{% url 'edit_person' person.no %}" title="แก้ไข"><i class="icon-edit"></i></a> <a href="{% url 'delete_person' person.no %}" title="ลบ"><i class="icon-trash"></i></a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 <div class="pagination">
-    <span class="step-links">
-        {% if people.has_previous %}
-            <a href="?{{queries.urlencode}}&amp;p={{ people.previous_page_number }}">previous</a>
-        {% endif %}
+	<span class="step-links">
+		{% if people.has_previous %}
+			<a href="?{{queries.urlencode}}&amp;p={{ people.previous_page_number }}">previous</a>
+		{% endif %}
 
-        <span class="current">
-            Page {{ people.number }} of {{ people.paginator.num_pages }}.
-        </span>
+		<span class="current">
+			Page {{ people.number }} of {{ people.paginator.num_pages }}.
+		</span>
 
-        {% if people.has_next %}
-            <a href="?{{queries.urlencode}}&amp;p={{ people.next_page_number }}">next</a>
-        {% endif %}
-    </span>
+		{% if people.has_next %}
+			<a href="?{{queries.urlencode}}&amp;p={{ people.next_page_number }}">next</a>
+		{% endif %}
+	</span>
 </div>
 {% endblock %}
