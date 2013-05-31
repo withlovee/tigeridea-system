@@ -1,19 +1,19 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel right">
-        <h1>Export List</h1>
-        <form action="/export/" method="get">
-            <table>
-                <tr><th>เลขประจำตัว</th><td><input type="text" name="no1" placeholder="ตั้งแต่" value="{{ queries.no1 }}">-<input type="text" name="no2" placeholder="ถึง" value="{{ queries.no2 }}"></td></tr>
-                <tr><th></th><td><input class="btn btn-primary" type="submit" value="ค้นหา"></td></tr>
-            </table>
-        </form>
-        {% if queries.no1 or queries.no2 %}
-        <a class="btn btn-large btn-primary" href="/uploads/export/export_list.xls">ดาวน์โหลดข้อมูล (xls)</a>
-        &nbsp; &nbsp; &nbsp;
-        <a class="btn btn-large btn-success" href="/uploads/export/export_images.zip">ดาวน์โหลดรูปประจำตัว</a>
-        
-        {% endif %}
-    </div>
+	<div class="panel right">
+		<h1>Export List</h1>
+		<form action="/export/" method="get">
+			<table>
+				<tr><th>เลขประจำตัว</th><td><input type="text" name="no1" placeholder="ตั้งแต่" value="{{ queries.no1 }}">-<input type="text" name="no2" placeholder="ถึง" value="{{ queries.no2 }}"></td></tr>
+				<tr><th></th><td><input class="btn btn-primary" type="submit" value="ค้นหา"></td></tr>
+			</table>
+		</form>
+		{% if queries.no1 or queries.no2 %}
+		<a class="btn btn-large btn-primary" href="/uploads/export/export_list.xls">ดาวน์โหลดข้อมูล (xls)</a>
+		&nbsp; &nbsp; &nbsp;
+		<a class="btn btn-large btn-success" href="/uploads/export/export_images.zip">ดาวน์โหลดรูปประจำตัว</a>
+		
+		{% endif %}
+	</div>
 {% endblock %}

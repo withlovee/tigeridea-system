@@ -11,26 +11,26 @@
 				<tr><th></th><td><input class="btn btn-primary" type="submit" value="ค้นหา"></td></tr>
 			</table>
 		</form>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th width="10%">เลขประจำตัว</th>
-                    <th width="50%">ชื่อ</th>
-                    <th width="30%">องค์กร</th>
-                    <th width="10%"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for person in people %}
-                <tr>
-                    <td>{{ person.name.no }}</td>
-                    <td><a href="{{ person.name.get_absolute_url }}"><strong>{{ person.name.first_name }} {{ person.name.last_name }}</strong></a></td>
-                    <td>{{ person.name.organization }}</td>
-                    <td><a href="{% url 'edit_person' person.name.no %}" title="แก้ไข"><i class="icon-edit"></i></a> <a href="{% url 'delete_person' person.name.no %}" title="ลบ"><i class="icon-trash"></i></a> <a href="{% url 'unban_person' person.name.no %}" title="เอาออกจาก Blacklist"><i class="icon-ok"></i></a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">เลขประจำตัว</th>
+					<th width="50%">ชื่อ</th>
+					<th width="30%">องค์กร</th>
+					<th width="10%"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for person in people %}
+				<tr>
+					<td>{{ person.name.no }}</td>
+					<td><a href="{{ person.name.get_absolute_url }}"><strong>{{ person.name.first_name }} {{ person.name.last_name }}</strong></a></td>
+					<td>{{ person.name.organization }}</td>
+					<td><a href="{% url 'edit_person' person.name.no %}" title="แก้ไข"><i class="icon-edit"></i></a> <a href="{% url 'delete_person' person.name.no %}" title="ลบ"><i class="icon-trash"></i></a> <a href="{% url 'unban_person' person.name.no %}" title="เอาออกจาก Blacklist"><i class="icon-ok"></i></a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
 <div class="pagination">
 	<span class="step-links">

@@ -1,29 +1,29 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel right">
-        <h1>Import log</h1>
-        <form action="/log/" method="post" enctype="multipart/form-data">
-        	{% csrf_token %}
-            <table>
-            	<tr><th><label for="file">File (.xls):</label></th><td><input id="file" name="file" type="file" /></td></tr>
-                <tr><th></th><td><input class="btn btn-primary" type="submit" value="Import"></td></tr>
-        	</table>
-        </form>
-        <table>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th width="10%">เลขประจำตัว</th>
-                    <th width="50%">ชื่อ</th>
-                    <th width="40%">เวลา</th>
-                </tr>
-            </thead>
-            <tbody>
-        {% for row in data %}
-        <tr><td>{{ row.no }}</td><td>{{ row.name }}</td><td>{{ row.timestamp }}</td></tr>
-        {% endfor %}
-            </tbody>
-        </table>
-    </div>
+	<div class="panel right">
+		<h1>Import log</h1>
+		<form action="/log/" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<table>
+				<tr><th><label for="file">File (.xls):</label></th><td><input id="file" name="file" type="file" /></td></tr>
+				<tr><th></th><td><input class="btn btn-primary" type="submit" value="Import"></td></tr>
+			</table>
+		</form>
+		<table>
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">เลขประจำตัว</th>
+					<th width="50%">ชื่อ</th>
+					<th width="40%">เวลา</th>
+				</tr>
+			</thead>
+			<tbody>
+		{% for row in data %}
+		<tr><td>{{ row.no }}</td><td>{{ row.name }}</td><td>{{ row.timestamp }}</td></tr>
+		{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}
