@@ -1,7 +1,8 @@
+#!-*- coding: utf-8 -*-
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
-from django.db.models import Max
+from django.db.models import Max, Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
@@ -14,8 +15,9 @@ from xlwt import *
 import xlrd
 import zipfile
 from time import time
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import os.path
+
 
 def list_person(request):
 	people = Person.objects.all()
@@ -130,18 +132,50 @@ def add_person(request):
 	return render(request, 'add_person.html', {'form': form, 'max_number': max_no})
 
 def view_person(request, no):
+	stat = []
+	graph = []
+	label = []
 	person_no = no
 	person = Person.objects.get(no=person_no)
 	log = Log.objects.filter(name__no=person_no)
+	# Check is the person is banned
 	try: 
 		BannedPerson.objects.get(name__no=person_no)
 		banned = True
 	except ObjectDoesNotExist:
 		banned = False
+	# Get log stat
+	stat_num = log.filter(name__no=person_no).aggregate(Count('timestamp'))
+	stat.append(stat_num['timestamp__count'])
+	stat_num = log.filter(timestamp__gte = (date.today()-timedelta(days=6))).aggregate(Count('timestamp'))
+	stat.append(stat_num['timestamp__count'])
+	stat_num = log.filter(timestamp__gte = (date.today()-timedelta(days=29))).aggregate(Count('timestamp'))
+	stat.append(stat_num['timestamp__count'])
+	# For graph
+	for i in range(30):
+		day = date.today()-timedelta(days=i)
+		print day
+		stat_num = log.filter(timestamp__year=day.year,
+			timestamp__month=day.month,
+			timestamp__day=day.day
+			).aggregate(Count('timestamp'))
+		label.append(str(int(day.strftime('%d')))+' '+day.strftime('%b'))
+		graph.append(stat_num['timestamp__count'])
+	label.reverse()
+	graph.reverse()
+	stat_all = 'จำนวนครั้งที่เข้าทั้งหมด'
+	stat_7 = 'จำนวนครั้งที่เข้าภายใน 7 วัน'
+	stat_30 = 'จำนวนครั้งที่เข้าภายใน 30 วัน'
 	return render(request, 'view_person.html', {
 		'person': person, 
+		'stat': stat,
 		'banned': banned, 
 		'log': log, 
+		'graph_label': label,
+		'graph': graph,
+		'stat_all': stat_all,
+		'stat_7': stat_7,
+		'stat_30': stat_30,
 		'enu_log': enumerate(log),
 		})
 
@@ -227,6 +261,9 @@ def import_log(request):
 					'timestamp': datetime.fromtimestamp(time2)
 					})
 	return render(request, 'import_log.html', {'data': data})
+
+def home(request):
+	return render(request, 'home.html')
 
 class EditPerson(UpdateView):
 	form_class = AddPersonForm

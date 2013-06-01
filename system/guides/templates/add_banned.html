@@ -8,9 +8,14 @@
 			{% csrf_token %}
 			<table>
 			{{ form.as_table }}
-			</table>
 			<tr><th></th><td><input class="btn btn-primary" type="submit" value="เพิ่ม"></td></tr>
+			</table>
 			</form>
 		</p>
 	</div>
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/chosen.css">
+	<script src="{{ STATIC_URL }}js/chosen.jquery.min.js"></script>
+	<script>
+		$("#id_name").chosen();
+	</script>
 {% endblock %}

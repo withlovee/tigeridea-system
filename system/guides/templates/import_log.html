@@ -3,6 +3,12 @@
 {% block content %}
 	<div class="panel right">
 		<h1>Import log</h1>
+		<p>ไฟล์ xls ที่นำเข้ามีรูปแบบดังนี้</p>
+		<table class="table table-bordered table-condensed">
+			<tr><td>100102 (ใส่เลขประจำตัว)</td><td>1370000595.704 (ใส่เวลา)</td></tr>
+			<tr><td>100122</td><td>1370001595.432</td></tr>
+			<tr><td>...</td><td>...</td></tr>
+		</table>
 		<form action="/log/" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			<table>
@@ -10,8 +16,8 @@
 				<tr><th></th><td><input class="btn btn-primary" type="submit" value="Import"></td></tr>
 			</table>
 		</form>
-		<table>
-		<table class="table">
+		<h2>ผลลัพธ์</h2>
+		<table class="table table-bordered table-condensed">
 			<thead>
 				<tr>
 					<th width="10%">เลขประจำตัว</th>
