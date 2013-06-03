@@ -51,7 +51,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-PROJECT_ROOT = 'D:/git/tigeridea-system/system/guides/'
+PROJECT_ROOT = 'home/ubuntu/tigeridea-system/system/guides/'
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'uploads')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
