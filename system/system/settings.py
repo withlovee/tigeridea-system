@@ -12,11 +12,11 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'system3.sqlite3',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'django',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
@@ -51,7 +51,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-PROJECT_ROOT = 'home/ubuntu/tigeridea-system/system/guides/'
+PROJECT_ROOT = '/home/ubuntu/tigeridea-system/system/guides/'
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'uploads')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -64,6 +64,7 @@ MEDIA_URL = '/uploads/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+# STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -115,7 +116,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     #"/Users/nuttt/sites/tigeridea-system/system/guides/templates",
-    "D:/git/tigeridea-system/system/guides/templates"
+    "/home/ubuntu/tigeridea-system/system/guides/templates"
 )
 
 INSTALLED_APPS = (
