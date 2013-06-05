@@ -192,7 +192,7 @@ def export_banned(request):
 		ws.write(i, 1, person.name.first_name+" "+person.name.last_name, text)
 		#ws.write(i, 2, person.timestamp, time)
 		i += 1
-	file_path = r""+os.path.dirname(__file__)+r"\uploads\export\banned_list.xls"
+	file_path = r""+os.path.dirname(__file__)+r"/uploads/export/banned_list.xls"
 	w.save(file_path)
 	return render(request, 'export_banned.html')
 
@@ -224,11 +224,11 @@ def export_person(request):
 			ws.write(i, 2, person.organization, text)
 			#ws.write(i, 2, person.timestamp, time)
 			i += 1
-		file_path = r""+os.path.dirname(__file__)+r"\uploads\export\export_list.xls"
+		file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_list.xls"
 		w.save(file_path)
 
 		# Create Images Zip
-		file_path = r""+os.path.dirname(__file__)+r"\uploads\export\export_images.zip"
+		file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_images.zip"
 		zf = zipfile.ZipFile(file_path, mode='w')
 		try:
 			for person in people:
