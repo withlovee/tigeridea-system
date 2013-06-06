@@ -18,11 +18,6 @@ from time import time
 from datetime import datetime, date, timedelta
 import os.path
 
-# github hook for auto pull
-def github_pull(request):
-	os.system("git pull")
-	os.system("sudo /etc/init.d/apache2 reload")
-	return redirect('/')
 
 def list_person(request):
 	people = Person.objects.all()

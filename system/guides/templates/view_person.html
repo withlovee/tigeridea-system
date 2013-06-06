@@ -13,25 +13,76 @@
 					<tr><th>ชื่อ</th><td>{{ person.first_name }} {{ person.last_name }}</td></tr>
 					<tr><th>องค์กร</th><td>{{ person.organization }}</td></tr>
 				</table>
+				<p>
+				{% if banned %}
+				<span class="btn btn-inverse btn-large">Banned</span> &nbsp;
+				<a class="btn btn-warning" href="{% url 'unban_person' person.no %}"><i class="icon-ok icon-white"></i> เอาออกจาก Blacklist</a>				
+				{% endif %}
 				<a class="btn btn-info" href="{% url 'edit_person' person.no %}"><i class="icon-edit icon-white"></i> แก้ไขข้อมูล</a>
 				<a class="btn btn-danger" href="{% url 'delete_person' person.no %}"><i class="icon-trash icon-white"></i> ลบออกจากระบบ</a>
 			</div>
 		</div>
 		<Br><br>
 		<h2>ประวัติการเข้า</h2>
-		<table class="table table-striped table-bordered table-condensed">
-			<thead>
-				<tr>
-					<th width="5%">ครั้งที่</th>
-					<th width="90%">วันที่</th>
-				</tr>
-			</thead>
-			<tbody>
-			{% for i, row in enu_log %}
-				<tr><td>{{ i|add:"1" }}</td><td>{{ row.timestamp }}</td></tr>
-			{% endfor %}
-			</tbody>
-		</table>
+		<div class="row-fluid">
+			<div class="span6">
+				<table class="table table-striped table-bordered table-condensed">
+					<tbody>
+						<tr>
+							<th width="90%">{{ stat_all }}</th><td width="10%">{{ stat.0 }}</td>
+						</tr>
+						<tr>
+							<th>{{ stat_7 }}</th><td>{{ stat.1 }}</td>
+						</tr>
+						<tr>
+							<th>{{ stat_30 }}</th><td>{{ stat.2 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<canvas id="canvas" height="400" width="580"></canvas>
+			</div>
+			<div class="span6">
+				<table class="table table-striped table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th width="10%">ครั้งที่</th>
+							<th width="90%">วันที่</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for i, row in enu_log %}
+						<tr><td>{{ i|add:"1" }}</td><td>{{ row.timestamp }}</td></tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
 		<p>{% if banned %}Banned{% endif %}</p>
 	</div>
+	<script src="{{ STATIC_URL }}js/Chart.min.js"></script>
+	<script>
+		var lineChartData = {
+
+			labels : {{ graph_label|safe }},
+			datasets : [
+				{
+					fillColor : "rgba(120,120,120,0.5)",
+					strokeColor : "rgba(120,120,120,0.6)",
+					pointColor : "rgba(100,100,100,1)",
+					pointStrokeColor : "#fff",
+					data : {{ graph }}
+				}
+			]
+		};
+		var options = {
+			scaleOverride : true,
+			scaleSteps : 10,
+			scaleStepWidth : 1,
+			scaleStartValue : 0,
+			scaleFontSize : 12
+		};
+
+	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData,options);
+	</script>
+	</body>
 {% endblock %}
