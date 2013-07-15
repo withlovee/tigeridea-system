@@ -2,6 +2,7 @@
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.db.models import Max, Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -17,12 +18,17 @@ import zipfile
 from time import time
 from datetime import datetime, date, timedelta
 import os.path
+import subprocess
 
+def gitshell(request):
+	# shell = subprocess.check_output(["/home/ubuntu/tigeridea-system/gitshell"])
+	shell = subprocess.check_output(["service", "apache2", "reload"])
+	return HttpResponse(shell)
 
 def list_person(request):
 	people = Person.objects.all()
 	page = request.GET.get('p')
-	entries_per_page = 2
+	entries_per_page = 30
 	
 	queries_without_page = request.GET.copy()
 	if queries_without_page.has_key('p'):
@@ -67,7 +73,7 @@ def list_person(request):
 def list_banned(request):
 	people = BannedPerson.objects.all()
 	page = request.GET.get('p')
-	entries_per_page = 2
+	entries_per_page = 30
 	
 	queries_without_page = request.GET.copy()
 	if queries_without_page.has_key('p'):

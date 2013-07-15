@@ -8,7 +8,7 @@ class Person(models.Model):
 	no = models.AutoField(primary_key=True)
 	first_name = models.CharField(max_length=50)
 	last_name = models.CharField(max_length=50)
-	organization = models.CharField(max_length=50)
+	organization = models.CharField(max_length=50, blank=True)
 
 	def filename(self, filename):
 		if self.no:
@@ -22,7 +22,7 @@ class Person(models.Model):
 		fname, dot, extension = filename.rpartition('.')
 		return 'people/'+'%s.%s' % (num, extension)
 
-	image = models.FileField(upload_to=filename)
+	image = models.FileField(upload_to=filename, blank=True)
 
 	def save(self, *args, **kwargs):
 		# delete old file when replacing by updating the file
