@@ -238,9 +238,10 @@ def export_person(request):
 		zf = zipfile.ZipFile(file_path, mode='w')
 		try:
 			for person in people:
-				files.append(person.image.name);
-				print 'adding '+person.image.path
-				zf.write(person.image.path,person.image.name)
+				if person.image:
+					files.append(person.image.name);
+					print 'adding '+person.image.path
+					zf.write(person.image.path,person.image.name)
 		finally:
 			print 'closing'
 			zf.close()
