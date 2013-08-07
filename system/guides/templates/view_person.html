@@ -43,7 +43,7 @@
 						</tr>
 					</tbody>
 				</table>
-				<canvas id="canvas" height="400" width="580"></canvas>
+				<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 			</div>
 			<div class="span6">
 				<table class="table table-striped table-bordered table-condensed">
@@ -61,32 +61,72 @@
 				</table>
 			</div>
 		</div>
-		<p>{% if banned %}Banned{% endif %}</p>
 	</div>
-	<script src="{{ STATIC_URL }}js/Chart.min.js"></script>
-	<script>
-		var lineChartData = {
 
-			labels : {{ graph_label|safe }},
-			datasets : [
-				{
-					fillColor : "rgba(120,120,120,0.5)",
-					strokeColor : "rgba(120,120,120,0.6)",
-					pointColor : "rgba(100,100,100,1)",
-					pointStrokeColor : "#fff",
-					data : {{ graph }}
+
+<script src="{{ STATIC_URL }}js/highcharts.js"></script>
+<script src="{{ STATIC_URL }}js/highcharts/data.js"></script>
+<script src="{{ STATIC_URL }}js/highcharts/exporting.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/highslide.css" />
+<script>
+$(function () {
+		$('#container').highcharts({
+			colors: [ '#555555' ],
+			chart: {
+				zoomType: 'x',
+				spacingRight: 0
+			},
+			title: {text: null},
+			xAxis: {
+				type: 'datetime',
+				maxZoom: 14 * 24 * 3600000, // fourteen days
+				title: { text: null }
+			},
+			yAxis: {
+				title: { text: null },
+				min: 0
+			},
+			tooltip: {
+				shared: true
+			},
+			legend: {
+				enabled: false
+			},
+			credits: {
+				enabled: false
+			},
+			plotOptions: {
+				series: {
+					lineColor: '#999999'
+				},
+				area: {
+					fillColor: {
+						linearGradient: [0, 0, 0, 300],
+						stops: [
+							[0, 'rgba(0,0,0,0.1)'],
+							[1, 'rgba(0,0,0,0.1)']
+						]
+					},
+					lineWidth: 1,
+					marker: {
+						enabled: true
+					},
+					shadow: false,
+					states: {
+						hover: { lineWidth: 1 }
+					},
+					threshold: null
 				}
-			]
-		};
-		var options = {
-			scaleOverride : true,
-			scaleSteps : 10,
-			scaleStepWidth : 1,
-			scaleStartValue : 0,
-			scaleFontSize : 12
-		};
+			},
+			series: [{
+				type: 'area',
+				name: 'จำนวนครั้ง',
+				pointInterval: 24 * 3600 * 1000,
+				pointStart: Date.UTC({{begin_date.2}}, {{begin_date.1}}, {{begin_date.0}}),
+				data: {{ graph }}
+			}]
+		});
+	});
+</script>
 
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData,options);
-	</script>
-	</body>
 {% endblock %}

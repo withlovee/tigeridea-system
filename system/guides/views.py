@@ -70,6 +70,70 @@ def list_person(request):
 		}
 	)
 
+
+def list_log(request):
+	log = Log.objects.order_by('timestamp').reverse()
+	page = request.GET.get('p')
+	entries_per_page = 30
+	
+	queries_without_page = request.GET.copy()
+	if queries_without_page.has_key('p'):
+		del queries_without_page['p']
+
+	# Get Search Query
+	no1 = request.GET.get('no1')
+	no2 = request.GET.get('no2')
+	first_name = request.GET.get('first_name')
+	last_name = request.GET.get('last_name')
+	date = request.GET.get('date')
+	month = request.GET.get('month')
+	year = request.GET.get('year')
+
+	# Filter Search
+	if no1 :
+		log = log.filter(name__no=no1)
+	if first_name :
+		log = log.filter(name__first_name__contains=first_name)
+	if last_name :
+		log = log.filter(name__last_name__contains=last_name)
+	if year :
+		log = log.filter(timestamp__year=int(year))
+	if month :
+		log = log.filter(timestamp__month=int(month))
+	if date :
+		log = log.filter(timestamp__day=int(date))
+
+	# Pagination
+	paginator = Paginator(log, entries_per_page)
+	try:
+		log = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+		log = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		log = paginator.page(paginator.num_pages)
+
+	for item in log:
+		item.no = item.name.no
+		item.first_name = item.name.first_name
+		item.last_name = item.name.last_name
+		item.organization = item.name.organization
+
+	month_names = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
+					'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม']
+	return render(request, 
+		'list_log.html', 
+		{
+		'log': log, 
+		'queries': queries_without_page, 
+		'queries_list': request.GET.dict(),
+		'date_list': range(1,32),
+		'month_list': zip(month_names,range(1,13)),
+		'year_list': range(2009,2021)
+		}
+	)
+
 def list_banned(request):
 	people = BannedPerson.objects.all()
 	page = request.GET.get('p')
@@ -143,7 +207,7 @@ def view_person(request, no):
 	label = []
 	person_no = no
 	person = Person.objects.get(no=person_no)
-	log = Log.objects.filter(name__no=person_no)
+	log = Log.objects.filter(name__no=person_no).order_by('timestamp')
 	# Check is the person is banned
 	try: 
 		BannedPerson.objects.get(name__no=person_no)
@@ -158,26 +222,25 @@ def view_person(request, no):
 	stat_num = log.filter(timestamp__gte = (date.today()-timedelta(days=29))).aggregate(Count('timestamp'))
 	stat.append(stat_num['timestamp__count'])
 	# For graph
-	for i in range(30):
+	for i in range(0,30):
 		day = date.today()-timedelta(days=i)
-		print day
 		stat_num = log.filter(timestamp__year=day.year,
 			timestamp__month=day.month,
 			timestamp__day=day.day
 			).aggregate(Count('timestamp'))
-		label.append(str(int(day.strftime('%d')))+' '+day.strftime('%b'))
+		daystr = date.today()-timedelta(days=i+1)
 		graph.append(stat_num['timestamp__count'])
-	label.reverse()
 	graph.reverse()
 	stat_all = 'จำนวนครั้งที่เข้าทั้งหมด'
 	stat_7 = 'จำนวนครั้งที่เข้าภายใน 7 วัน'
 	stat_30 = 'จำนวนครั้งที่เข้าภายใน 30 วัน'
+	begin_date = date.today()-timedelta(days=30)
+	begin_date_arr = [begin_date.strftime('%d'),int(begin_date.strftime('%m'))-1,begin_date.strftime('%Y')]
 	return render(request, 'view_person.html', {
 		'person': person, 
+		'begin_date': begin_date_arr,
 		'stat': stat,
-		'banned': banned, 
-		'log': log, 
-		'graph_label': label,
+		'banned': banned,
 		'graph': graph,
 		'stat_all': stat_all,
 		'stat_7': stat_7,
@@ -270,7 +333,41 @@ def import_log(request):
 	return render(request, 'import_log.html', {'data': data})
 
 def home(request):
-	return render(request, 'home.html')
+	stat = []
+	graph = []
+	label = []
+	log = Log.objects.order_by('timestamp').reverse()
+	# Get log stat
+	stat_num = log.aggregate(Count('timestamp'))
+	stat.append(stat_num['timestamp__count'])
+	stat_num = log.filter(timestamp__gte = (date.today()-timedelta(days=6))).aggregate(Count('timestamp'))
+	stat.append(stat_num['timestamp__count'])
+	stat_num = log.filter(timestamp__gte = (date.today()-timedelta(days=29))).aggregate(Count('timestamp'))
+	stat.append(stat_num['timestamp__count'])
+	# For graph
+	for i in range(0,30):
+		day = date.today()-timedelta(days=i)
+		stat_num = log.filter(timestamp__year=day.year,
+			timestamp__month=day.month,
+			timestamp__day=day.day
+			).aggregate(Count('timestamp'))
+		daystr = date.today()-timedelta(days=i+1)
+		graph.append(stat_num['timestamp__count'])
+	graph.reverse()
+	stat_all = 'จำนวนครั้งที่เข้าทั้งหมด'
+	stat_7 = 'จำนวนครั้งที่เข้าภายใน 7 วัน'
+	stat_30 = 'จำนวนครั้งที่เข้าภายใน 30 วัน'
+	begin_date = date.today()-timedelta(days=30)
+	begin_date_arr = [begin_date.strftime('%d'),int(begin_date.strftime('%m'))-1,begin_date.strftime('%Y')]
+	return render(request, 'home.html', {
+		'stat': stat,
+		'begin_date': begin_date_arr,
+		'graph': graph,
+		'stat_all': stat_all,
+		'stat_7': stat_7,
+		'stat_30': stat_30,
+		'enu_log': enumerate(log[:15]),
+		})
 
 class EditPerson(UpdateView):
 	form_class = AddPersonForm

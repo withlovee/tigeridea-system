@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+ 
+{% block content %}
+	<div class="panel right">
+		<h1>ประวัติการเข้าทั้งหมด</h1>
+		<form action="/list/log/" method="get">
+			<div class="row-fluid">
+				<div class="span4">
+					<table>
+						<tr><th>เลขประจำตัว</th><td><input type="text" name="no1" placeholder="" value="{{ queries_list.no1 }}"></td></tr>
+						<tr><th>ชื่อจริง</th><td><input type="text" name="first_name" placeholder="" value="{{ queries_list.first_name }}"></td></tr>
+						<tr><th>นามสกุล</th><td><input type="text" name="last_name" placeholder="" value="{{ queries_list.last_name }}"></td></tr>
+						<tr><th></th><td><input class="btn btn-primary" type="submit" value="ค้นหา"></td></tr>
+					</table>
+				</div>
+				<div class="span6">
+					<table>
+						<tr>
+							<th>วันที่</th>
+							<td>
+								<div class="controls controls-row">
+								<select id="date" name="date" class="input-small">
+									<option value="">วัน</option>
+									{% for i in date_list %}
+									<option{% if queries_list.date == i|slugify %} selected{% endif %}>{{i}}</option>
+									{% endfor %}
+								</select><select id="month" name="month" class="input-medium">
+									<option value="">เดือน</option>
+									{% for name in month_list %}
+									<option value="{{name.1}}"{% if queries_list.month == name.1|slugify %} selected{% endif %}>{{name.0}}</option>
+									{% endfor %}      
+								</select><select id="year" name="year" class="input-small">
+									<option value="">ปี</option>
+									{% for i in year_list %}
+									<option{% if queries_list.year == i|slugify %} selected{% endif %}>{{i}}</option>
+									{% endfor %}     
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th width="30%">เวลา</th>
+					<th width="10%">เลขประจำตัว</th>
+					<th width="30%">ชื่อ</th>
+					<th width="30%">องค์กร</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for person in log %}
+				<tr>
+					<td>{{ person.timestamp }}</td>
+					<td>{{ person.no }}</td>
+					<td><a href="{% url 'view_person' person.no %}"><strong>{{ person.first_name }} {{ person.last_name }}</strong></a></td>
+					<td>{{ person.organization }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+<div class="pagination">
+	<span class="step-links">
+		{% if log.has_previous %}
+			<a href="?{{queries.urlencode}}&amp;p={{ log.previous_page_number }}">previous</a>
+		{% endif %}
+
+		<span class="current">
+			Page {{ log.number }} of {{ log.paginator.num_pages }}.
+		</span>
+
+		{% if log.has_next %}
+			<a href="?{{queries.urlencode}}&amp;p={{ log.next_page_number }}">next</a>
+		{% endif %}
+	</span>
+</div>
+{% endblock %}

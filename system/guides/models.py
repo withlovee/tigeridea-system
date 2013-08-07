@@ -34,7 +34,7 @@ class Person(models.Model):
 		super(Person, self).save(*args, **kwargs)
 
 	def __unicode__(self):
-		return u'%s %s %s' % (self.no, self.first_name, self.last_name)
+		return u'%s %s' % (self.first_name, self.last_name)
 		
 	@models.permalink
 	def get_absolute_url(self):

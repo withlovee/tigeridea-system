@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^add/', 'guides.views.add_person'), # add a person
     url(r'^gitshell/', 'guides.views.gitshell'), # pull git, restart apache
     url(r'^view/(?P<no>\d+)/$', 'guides.views.view_person', name='view_person'), # view a person
+    url(r'^list/log/$', 'guides.views.list_log'), # view log
     url(r'^list/$', 'guides.views.list_person'), # list people
     url(r'^export/$', 'guides.views.export_person'), # export people
     url(r'^log/$', 'guides.views.import_log'), # import log

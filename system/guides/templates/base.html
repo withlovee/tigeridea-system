@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<title>System</title>
 	<link rel="stylesheet/less" href="{{ STATIC_URL }}css/style.less">
 	<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
 	<script src="{{ STATIC_URL }}js/jquery.min.js"></script>
@@ -15,8 +16,14 @@
 			<li><a href="/">หน้าแรก</a></li>
 			<li><a href="/add/">เพิ่มมัคคุเทศก์</a></li>
 			<li><a href="/list/">ทะเบียนมัคคุเทศก์</a></li>
+			<li class="dropdown">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#">ประวัติการเข้าชม <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="/list/log">ดูทั้งหมด</a></li>
+					<li><a href="/log">Import Log</a></li>
+				</ul>
+			</li>
 			<li><a href="/export">Export</a></li>
-			<li><a href="/log">Import Log</a></li>
 			<li class="dropdown">
 				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Blacklist <b class="caret"></b></a>
 				<ul class="dropdown-menu">
