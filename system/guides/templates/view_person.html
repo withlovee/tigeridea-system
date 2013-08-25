@@ -2,7 +2,7 @@
  
 {% block content %}
 	<div class="panel right">
-		<h1>{{ person.first_name }} {{ person.last_name }}</h1>
+		<h1>{{ person.name_prefix }}{{ person.first_name }} {{ person.last_name }}</h1>
 		<div class="row-fluid">
 			<div class="span3">
 				{% if person.image %}
@@ -14,7 +14,7 @@
 			<div class="span9">
 				<table class="table">
 					<tr><th width="20%">เลขประจำตัว</th><td>{{ person.no }}</td></tr>
-					<tr><th>ชื่อ</th><td>{{ person.first_name }} {{ person.last_name }}</td></tr>
+					<tr><th>ชื่อ</th><td>{{ person.name_prefix }}{{ person.first_name }} {{ person.last_name }}</td></tr>
 					<tr><th>องค์กร</th><td>{{ person.organization }}</td></tr>
 				</table>
 				<p>
@@ -73,6 +73,7 @@ $(function () {
 		$('#container').highcharts({
 			colors: [ '#555555' ],
 			chart: {
+				backgroundColor: null,
 				zoomType: 'x',
 				spacingRight: 0
 			},

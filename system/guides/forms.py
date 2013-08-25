@@ -11,9 +11,10 @@ class AddPersonForm(forms.ModelForm):
 		self.fields['first_name'].widget.attrs['placeholder'] = "First Name"
 		self.fields['last_name'].widget.attrs['placeholder'] = "Last Name"
 		#self.fields['no'].widget.attrs['placeholder'] = "no"
+		self.fields['name_prefix'].label = 'คำนำหน้าชื่อ'
 		self.fields['first_name'].label = 'ชื่อจริง'
 		self.fields['last_name'].label = 'นามสกุล'
-		self.fields['organization'].label = 'องค์กร'
+		self.fields['organization'].label = 'สังกัด'
 		self.fields['image'].label = 'รูป'
 
 class LogForm(forms.ModelForm):

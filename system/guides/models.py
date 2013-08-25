@@ -6,9 +6,10 @@ from django.db.models import Max
 
 class Person(models.Model):
 	no = models.AutoField(primary_key=True)
-	first_name = models.CharField(max_length=50)
-	last_name = models.CharField(max_length=50)
-	organization = models.CharField(max_length=50, blank=True)
+	name_prefix = models.CharField(max_length=100, blank=True)
+	first_name = models.CharField(max_length=100)
+	last_name = models.CharField(max_length=100)
+	organization = models.CharField(max_length=100, blank=True)
 
 	def filename(self, filename):
 		if self.no:
@@ -34,7 +35,7 @@ class Person(models.Model):
 		super(Person, self).save(*args, **kwargs)
 
 	def __unicode__(self):
-		return u'%s %s' % (self.first_name, self.last_name)
+		return u'%s%s %s' % (self.name_prefix, self.first_name, self.last_name)
 		
 	@models.permalink
 	def get_absolute_url(self):
@@ -54,7 +55,7 @@ class BannedPerson(models.Model):
 	name = models.OneToOneField(Person, related_name='is banned')
 	timestamp = models.DateTimeField(auto_now_add=True)
 	def __unicode__(self):
-		return self.name.first_name+' '+self.name.last_name
+		return self.name.name_prefix+self.name.first_name+' '+self.name.last_name
 
 class BannedPersonAdmin(admin.ModelAdmin): 
 	list_display = ('name', 'timestamp')
@@ -67,7 +68,7 @@ class Log(models.Model):
 	name = models.ForeignKey(Person, related_name='logs')
 	timestamp = models.DateTimeField()
 	def __unicode__(self):
-		return self.name.first_name+' '+self.name.last_name
+		return self.name.name_prefix+self.name.first_name+' '+self.name.last_name
 
 class LogAdmin(admin.ModelAdmin): 
 	list_display = ('name', 'timestamp')

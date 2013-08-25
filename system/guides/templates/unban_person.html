@@ -2,9 +2,9 @@
  
 {% block content %}
 	<div class="panel right">
-		<h1>ลบ {{ bannedperson.name.first_name }} {{ bannedperson.name.last_name }} ออกจาก Blacklist</h1>
+		<h1>ลบ {{ bannedperson.name.name_prefix }}{{ bannedperson.name.first_name }} {{ bannedperson.name.last_name }} ออกจาก Blacklist</h1>
 		<p>
-			แน่ใจว่าต้องการลบ {{ bannedperson.name.no }} {{ bannedperson.name.first_name }} {{ bannedperson.name.last_name }} ออกจาก Blacklist?
+			แน่ใจว่าต้องการลบ {{ bannedperson.name.no }} {{ bannedperson.name.name_prefix }}{{ bannedperson.name.first_name }} {{ bannedperson.name.last_name }} ออกจาก Blacklist?
 			<form method="post">
 			{% csrf_token %}
 			<input class="btn btn-primary" type="submit" value="แน่ใจ">

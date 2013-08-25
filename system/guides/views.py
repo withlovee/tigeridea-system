@@ -255,10 +255,21 @@ def export_banned(request):
 	text = XFStyle()
 	time = XFStyle()
 	time.num_format_str = 'M/D/YY h:mm'
+	# Create Header
 	i = 0
+	ws.write(i, 0, u"เลขประจำตัว", text)
+	ws.write(i, 1, u"คำนำหน้า", text)
+	ws.write(i, 2, u"ชื่อจริง", text)
+	ws.write(i, 3, u"นามสกุล", text)
+	ws.write(i, 4, u"สังกัด", text)
+	i += 1
+	# Create data XLS
 	for person in people:
 		ws.write(i, 0, person.name.no, text)
-		ws.write(i, 1, person.name.first_name+" "+person.name.last_name, text)
+		ws.write(i, 1, person.name.name_prefix, text)
+		ws.write(i, 2, person.name.first_name, text)
+		ws.write(i, 3, person.name.last_name, text)
+		ws.write(i, 4, person.name.organization, text)
 		#ws.write(i, 2, person.timestamp, time)
 		i += 1
 	file_path = r""+os.path.dirname(__file__)+r"/uploads/export/banned_list.xls"
@@ -285,12 +296,21 @@ def export_person(request):
 	time.num_format_str = 'M/D/YY h:mm'
 
 	if no1 or no2:
-		# Create data XLS
+		# Create Header
 		i = 0
+		ws.write(i, 0, u"เลขประจำตัว", text)
+		ws.write(i, 1, u"คำนำหน้า", text)
+		ws.write(i, 2, u"ชื่อจริง", text)
+		ws.write(i, 3, u"นามสกุล", text)
+		ws.write(i, 4, u"สังกัด", text)
+		i += 1
+		# Create data XLS
 		for person in people:
 			ws.write(i, 0, person.no, text)
-			ws.write(i, 1, person.first_name+" "+person.last_name, text)
-			ws.write(i, 2, person.organization, text)
+			ws.write(i, 1, person.name_prefix, text)
+			ws.write(i, 2, person.first_name, text)
+			ws.write(i, 3, person.last_name, text)
+			ws.write(i, 4, person.organization, text)
 			#ws.write(i, 2, person.timestamp, time)
 			i += 1
 		file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_list.xls"
@@ -327,7 +347,7 @@ def import_log(request):
 				log_result = form.save()
 				data.append({
 					'no': log_result.name.no,
-					'name': log_result.name.first_name+' '+log_result.name.last_name, 
+					'name': log_result.name.name_prefix+log_result.name.first_name+' '+log_result.name.last_name, 
 					'timestamp': datetime.fromtimestamp(time2)
 					})
 	return render(request, 'import_log.html', {'data': data})
