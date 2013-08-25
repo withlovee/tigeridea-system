@@ -1,1 +1,1 @@
-CRUD
+CRUD by django
