@@ -2,7 +2,7 @@
  
 {% block content %}
 	<div class="panel right">
-		<h1>แน่ใจว่าต้องการลบ {{ person.name_prefix }}{{ person.first_name }} {{ person.last_name }}</h1>
+		<h1>แน่ใจว่าต้องการลบ {{ person.name_prefix }} {{ person.first_name }} {{ person.last_name }}</h1>
 		<p>
 			<form method="post">
 			{% csrf_token %}

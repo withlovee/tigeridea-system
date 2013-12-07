@@ -55,7 +55,7 @@
 				<tr>
 					<td>{{ person.timestamp }}</td>
 					<td>{{ person.no }}</td>
-					<td><a href="{% url 'view_person' person.no %}"><strong>{{ person.name_prefix }}{{ person.first_name }} {{ person.last_name }}</strong></a></td>
+					<td><a href="{% url 'view_person' person.no %}"><strong>{{ person.name_prefix }} {{ person.first_name }} {{ person.last_name }}</strong></a></td>
 					<td>{{ person.organization }}</td>
 				</tr>
 				{% endfor %}
