@@ -70,7 +70,6 @@ def list_person(request):
 		}
 	)
 
-
 def list_log(request):
 	log = Log.objects.order_by('timestamp').reverse()
 	page = request.GET.get('p')
@@ -289,47 +288,59 @@ def export_person(request):
 	if no2 :
 		people = people.filter(no__lte=no2)
 
+	if no1 or no2:
+		files = create_export_people(people)
+
+	return render(request, 'export_people.html', {'queries': request.GET.copy(), 'files': files})
+
+def export_person_all(request):
+	people = Person.objects.all().order_by('no')
+	files = create_export_people(people)
+
+	return redirect("/uploads/export/export_list.xls")
+
+def create_export_people(people):
+	files = []
+
 	w = Workbook()
 	ws = w.add_sheet('People')
 	text = XFStyle()
 	time = XFStyle()
 	time.num_format_str = 'M/D/YY h:mm'
 
-	if no1 or no2:
-		# Create Header
-		i = 0
-		ws.write(i, 0, u"เลขประจำตัว", text)
-		ws.write(i, 1, u"คำนำหน้า", text)
-		ws.write(i, 2, u"ชื่อจริง", text)
-		ws.write(i, 3, u"นามสกุล", text)
-		ws.write(i, 4, u"สังกัด", text)
+	# Create Header
+	i = 0
+	ws.write(i, 0, u"เลขประจำตัว", text)
+	ws.write(i, 1, u"คำนำหน้า", text)
+	ws.write(i, 2, u"ชื่อจริง", text)
+	ws.write(i, 3, u"นามสกุล", text)
+	ws.write(i, 4, u"สังกัด", text)
+	i += 1
+	# Create data XLS
+	for person in people:
+		ws.write(i, 0, person.no, text)
+		ws.write(i, 1, person.name_prefix, text)
+		ws.write(i, 2, person.first_name, text)
+		ws.write(i, 3, person.last_name, text)
+		ws.write(i, 4, person.organization, text)
+		#ws.write(i, 2, person.timestamp, time)
 		i += 1
-		# Create data XLS
+	file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_list.xls"
+	w.save(file_path)
+
+	# Create Images Zip
+	file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_images.zip"
+	zf = zipfile.ZipFile(file_path, mode='w')
+	try:
 		for person in people:
-			ws.write(i, 0, person.no, text)
-			ws.write(i, 1, person.name_prefix, text)
-			ws.write(i, 2, person.first_name, text)
-			ws.write(i, 3, person.last_name, text)
-			ws.write(i, 4, person.organization, text)
-			#ws.write(i, 2, person.timestamp, time)
-			i += 1
-		file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_list.xls"
-		w.save(file_path)
-
-		# Create Images Zip
-		file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_images.zip"
-		zf = zipfile.ZipFile(file_path, mode='w')
-		try:
-			for person in people:
-				if person.image:
-					files.append(person.image.name);
-					print 'adding '+person.image.path
-					zf.write(person.image.path,person.image.name)
-		finally:
-			print 'closing'
-			zf.close()
-
-	return render(request, 'export_people.html', {'queries': request.GET.copy(), 'files': files})
+			if person.image:
+				files.append(person.image.name);
+				print 'adding '+person.image.path
+				zf.write(person.image.path,person.image.name)
+	finally:
+		print 'closing'
+		zf.close()
+	return files
 
 def import_log(request):
 	data = []
@@ -351,6 +362,50 @@ def import_log(request):
 					'timestamp': datetime.fromtimestamp(time2)
 					})
 	return render(request, 'import_log.html', {'data': data})
+
+def import_person(request):
+	data = []
+	if request.method == 'POST':
+		log_file = request.FILES['file']
+		path = default_storage.save('uploads/import_person.xls', ContentFile(log_file.read()))
+		tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+		book = xlrd.open_workbook(tmp_file)
+		sh = book.sheet_by_index(0)
+		for i in range(1, sh.nrows):
+			no = sh.cell_value(rowx=i, colx=0)
+			name_prefix = sh.cell_value(rowx=i, colx=1)+u""
+			first_name = sh.cell_value(rowx=i, colx=2)+u""
+			last_name = sh.cell_value(rowx=i, colx=3)+u""
+			organization = sh.cell_value(rowx=i, colx=4)+u""
+			if len(first_name)>0 and len(last_name)>0:
+				if no:
+					no = int(no)
+				else:
+					no = None
+				try: 
+					person = Person.objects.get(no=no)
+					person.name_prefix = name_prefix
+					person.first_name = first_name
+					person.last_name = last_name
+					person.organization = organization
+					person.save()
+					data.append(person)
+				except Person.DoesNotExist:
+					person = AddPersonForm({
+									'name_prefix': name_prefix, 
+									'first_name': first_name, 
+									'last_name': last_name, 
+									'organization': organization
+								})
+					person_result = person.save()
+					data.append({
+						'no': person_result.no,
+						'name_prefix': person_result.name_prefix, 
+						'first_name': person_result.first_name, 
+						'last_name': person_result.last_name, 
+						'organization': person_result.organization
+						})
+	return render(request, 'import_person.html', {'data': data})
 
 def home(request):
 	stat = []

@@ -27,7 +27,7 @@
 			</thead>
 			<tbody>
 		{% for row in data %}
-		<tr><td>{{ row.no }}</td><td>{{ row.name }}</td><td>{{ row.timestamp }}</td></tr>
+		<tr><td>{{ row.no }}</td><td>{{ row.name.name_prefix }} {{ row.name.first_name }} {{ row.name.last_name }}</td><td>{{ row.timestamp }}</td></tr>
 		{% endfor %}
 			</tbody>
 		</table>
