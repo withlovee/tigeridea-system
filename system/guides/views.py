@@ -392,6 +392,7 @@ def import_person(request):
 					data.append(person)
 				except Person.DoesNotExist:
 					person = AddPersonForm({
+									'no': no,
 									'name_prefix': name_prefix, 
 									'first_name': first_name, 
 									'last_name': last_name, 

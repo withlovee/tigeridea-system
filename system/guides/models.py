@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 from django.db.models import Max
 
 class Person(models.Model):
-	no = models.AutoField(primary_key=True)
+	no = models.IntegerField(primary_key=True)
 	name_prefix = models.CharField(max_length=100, blank=True)
 	first_name = models.CharField(max_length=100)
 	last_name = models.CharField(max_length=100)
