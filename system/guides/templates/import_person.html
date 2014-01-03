@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+ 
+{% block content %}
+	<div class="panel right">
+		<h1>นำเข้าข้อมูลมัคคุเทศก์</h1>
+		<p>ไฟล์ xls ที่นำเข้ามีรูปแบบดังนี้<br><br>
+		<strong>หมายเหตุ</strong><br>
+		1. ไม่ต้องใส่เลขประจำตัวในกรณีที่ต้องการเพิ่มมัคคุเทศก์เข้าไป<br>
+		2. ใส่เลขประจำตัวในกรณีที่ต้องการแก้ไขข้อมูลมัคคุเทศก์ที่มีอยู่ในระบบแล้ว</p>
+		<table class="table table-bordered table-condensed">
+			<tr>
+				<td width="15%">เลขประจำตัว</td>
+				<td width="15%">คำนำหน้า</td>
+				<td width="15%">ชื่อจริง</td>
+				<td width="15%">นามสกุล</td>
+				<td width="40%">สังกัด</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>นางสาว</td>
+				<td>เพ็ชรี</td>
+				<td>สุขสวัสดิ์</td>
+				<td>พระที่นั่งอนันตสมาคม</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td>มานี</td>
+				<td>เกศสม</td>
+				<td></td>
+			</tr>
+		</table>
+		<form action="/import/" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<table>
+				<tr><th><label for="file">File (.xls):</label></th><td><input id="file" name="file" type="file" /></td></tr>
+				<tr><th></th><td><input class="btn btn-primary" type="submit" value="Import"></td></tr>
+			</table>
+		</form>
+		<h2>ผลลัพธ์</h2>
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th width="10%">เลขประจำตัว</th>
+					<th width="50%">ชื่อ</th>
+					<th width="40%">สังกัด</th>
+				</tr>
+			</thead>
+			<tbody>
+		{% for row in data %}
+		<tr>
+		<td>{{ row.no }}</td>
+		<td>{{ row.name_prefix }} {{ row.first_name }} {{ row.last_name }}</td>
+		<td>{{ row.organization }}</td>
+		</tr>
+		{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
