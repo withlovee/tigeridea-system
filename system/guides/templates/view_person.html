@@ -16,6 +16,7 @@
 					<tr><th width="20%">เลขประจำตัว</th><td>{{ person.no }}</td></tr>
 					<tr><th>ชื่อ</th><td>{{ person.name_prefix }} {{ person.first_name }} {{ person.last_name }}</td></tr>
 					<tr><th>สังกัด</th><td>{{ person.organization }}</td></tr>
+					<tr><th>หมายเหตุ</th><td>{{ person.note|linebreaksbr }}</td></tr>
 				</table>
 				<p>
 				{% if banned %}

@@ -4,6 +4,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.db.models import Max, Count
+from django.db import IntegrityError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
@@ -261,6 +262,8 @@ def export_banned(request):
 	ws.write(i, 2, u"ชื่อจริง", text)
 	ws.write(i, 3, u"นามสกุล", text)
 	ws.write(i, 4, u"สังกัด", text)
+	ws.write(i, 5, u"ไฟล์รูป", text)
+	ws.write(i, 6, u"หมายเหตุ", text)
 	i += 1
 	# Create data XLS
 	for person in people:
@@ -269,6 +272,8 @@ def export_banned(request):
 		ws.write(i, 2, person.name.first_name, text)
 		ws.write(i, 3, person.name.last_name, text)
 		ws.write(i, 4, person.name.organization, text)
+		ws.write(i, 5, person.image, text)
+		ws.write(i, 6, person.note, text)
 		#ws.write(i, 2, person.timestamp, time)
 		i += 1
 	file_path = r""+os.path.dirname(__file__)+r"/uploads/export/banned_list.xls"
@@ -315,6 +320,8 @@ def create_export_people(people):
 	ws.write(i, 2, u"ชื่อจริง", text)
 	ws.write(i, 3, u"นามสกุล", text)
 	ws.write(i, 4, u"สังกัด", text)
+	ws.write(i, 5, u"ไฟล์รูป", text)
+	ws.write(i, 6, u"หมายเหตุ", text)
 	i += 1
 	# Create data XLS
 	for person in people:
@@ -323,6 +330,9 @@ def create_export_people(people):
 		ws.write(i, 2, person.first_name, text)
 		ws.write(i, 3, person.last_name, text)
 		ws.write(i, 4, person.organization, text)
+		if person.image:
+			ws.write(i, 5, person.image.url.replace('/uploads/',''), text)
+		ws.write(i, 6, person.note, text)
 		#ws.write(i, 2, person.timestamp, time)
 		i += 1
 	file_path = r""+os.path.dirname(__file__)+r"/uploads/export/export_list.xls"
@@ -355,12 +365,19 @@ def import_log(request):
 			time2 = int(sh.cell_value(rowx=i, colx=1))
 			form = LogForm({'name': no, 'timestamp': datetime.fromtimestamp(time2)})
 			if form.is_valid():
-				log_result = form.save()
-				data.append({
-					'no': log_result.name.no,
-					'name': log_result.name.name_prefix+log_result.name.first_name+' '+log_result.name.last_name, 
-					'timestamp': datetime.fromtimestamp(time2)
-					})
+				try:
+					log_result = form.save()
+					data.append({
+						'no': log_result.name.no,
+						'name': log_result.name, 
+						'timestamp': datetime.fromtimestamp(time2)
+						})
+				except IntegrityError:
+					data.append({
+						'no': no,
+						'name': '-', 
+						'timestamp': 'Duplicated Data'
+						})
 	return render(request, 'import_log.html', {'data': data})
 
 def import_person(request):
@@ -371,12 +388,15 @@ def import_person(request):
 		tmp_file = os.path.join(settings.MEDIA_ROOT, path)
 		book = xlrd.open_workbook(tmp_file)
 		sh = book.sheet_by_index(0)
-		for i in range(1, sh.nrows):
+		for i in range(1, sh.nrows+1):
 			no = sh.cell_value(rowx=i, colx=0)
 			name_prefix = sh.cell_value(rowx=i, colx=1)+u""
 			first_name = sh.cell_value(rowx=i, colx=2)+u""
 			last_name = sh.cell_value(rowx=i, colx=3)+u""
 			organization = sh.cell_value(rowx=i, colx=4)+u""
+			#image = sh.cell_value(rowx=i, colx=5)+u""
+			#note = sh.cell_value(rowx=i, colx=6)+u""
+			note = sh.cell_value(rowx=i, colx=5)+u""
 			if len(first_name)>0 and len(last_name)>0:
 				if no:
 					no = int(no)
@@ -388,6 +408,7 @@ def import_person(request):
 					person.first_name = first_name
 					person.last_name = last_name
 					person.organization = organization
+					person.note = note
 					person.save()
 					data.append(person)
 				except Person.DoesNotExist:
@@ -396,7 +417,8 @@ def import_person(request):
 									'name_prefix': name_prefix, 
 									'first_name': first_name, 
 									'last_name': last_name, 
-									'organization': organization
+									'organization': organization,
+									'note': note,
 								})
 					person_result = person.save()
 					data.append({
@@ -404,7 +426,8 @@ def import_person(request):
 						'name_prefix': person_result.name_prefix, 
 						'first_name': person_result.first_name, 
 						'last_name': person_result.last_name, 
-						'organization': person_result.organization
+						'organization': person_result.organization,
+						'note': person_result.note,
 						})
 	return render(request, 'import_person.html', {'data': data})
 

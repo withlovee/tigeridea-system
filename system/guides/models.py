@@ -10,6 +10,7 @@ class Person(models.Model):
 	first_name = models.CharField(max_length=100)
 	last_name = models.CharField(max_length=100)
 	organization = models.CharField(max_length=100, blank=True)
+	note = models.CharField(max_length=10000, blank=True)
 
 	def filename(self, filename):
 		if self.no:
